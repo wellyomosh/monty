@@ -1,6 +1,6 @@
 /*
  * File: errors_1.c
-* Auth: wellyomosh
+ * Auth: Tonny Ogaa
  *      
  */
 
