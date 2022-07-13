@@ -1,21 +1,18 @@
 #include "monty.h"
 /**
- * f_pall - prints the stack
- * @head: stack head
- * @counter: no used
- * Return: no return
-*/
-void f_pall(stack_t **head, unsigned int counter)
+ * pall - function that prints the stack
+ * @stack: a double linked list
+ * @line_number: number of line in code to print error message.
+ */
+void pall(stack_t **stack, unsigned int line_number)
 {
-	stack_t *h;
-	(void)counter;
+	stack_t *p;
+	(void)line_number;
 
-	h = *head;
-	if (h == NULL)
-		return;
-	while (h)
+	p = *stack;
+	while (p != NULL)
 	{
-		printf("%d\n", h->n);
-		h = h->next;
+		printf("%i\n", p->n);
+		p = p->prev;
 	}
 }
