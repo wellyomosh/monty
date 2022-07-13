@@ -1,37 +1,44 @@
 #include "monty.h"
 /**
- * f_push - add node to the stack
- * @head: stack head
- * @counter: line_number
- * Return: no return
-*/
-void f_push(stack_t **head, unsigned int counter)
+ * push - function that push an unteger to the stack
+ * @stack: a double linked list
+ * @line_number: number of line in code to print error message.
+ */
+void push(stack_t **stack, unsigned int line_number)
 {
-	int n, j = 0, flag = 0;
+	stack_t *new, *p;
+	int i = 0, number;
 
-	if (bus.arg)
+	if (global[1][0] == 0)
+		global[1][0] = 'a';
+	if (global[1][0] == '-')
+		i++;
+	for (; global[1][i] != '\0'; i++)
 	{
-		if (bus.arg[0] == '-')
-			j++;
-		for (; bus.arg[j] != '\0'; j++)
+		if (isdigit(global[1][i]) == 0)
 		{
-			if (bus.arg[j] > 57 || bus.arg[j] < 48)
-				flag = 1; }
-		if (flag == 1)
-		{ fprintf(stderr, "L%d: usage: push integer\n", counter);
-			fclose(bus.file);
-			free(bus.content);
-			free_stack(*head);
-			exit(EXIT_FAILURE); }}
+			free_stack(stack);
+			free(global[0]);
+			free(global[1]);
+			free(global[2]);
+			free(global);
+			fprintf(stderr, "L%u: usage: push integer\n", line_number);
+			exit(EXIT_FAILURE);
+		}
+	}
+	number = atoi(global[1]);
+	new = (stack_t *)malloc(sizeof(stack_t));
+	if (new == NULL)
+		error_malloc(stack, NULL, NULL, NULL);
+	new->n = number;
+	new->next = NULL;
+	if (*stack == NULL)
+		new->prev = NULL;
 	else
-	{ fprintf(stderr, "L%d: usage: push integer\n", counter);
-		fclose(bus.file);
-		free(bus.content);
-		free_stack(*head);
-		exit(EXIT_FAILURE); }
-	n = atoi(bus.arg);
-	if (bus.lifi == 0)
-		addnode(head, n);
-	else
-		addqueue(head, n);
+	{
+		new->prev = *stack;
+		p = *stack;
+		p->next = new;
+	}
+	*stack = new;
 }
