@@ -1,42 +1,76 @@
-#include "monty.h"
+# include "monty.h"
 
 /**
-* create_buff - creates the buffer to parse through files
-* @file_name: name of the file
-*/
-void create_buff(char *file_name)
+ * add_node_lifo - adds a new node at the beginning of a stack_t list
+ * @stack: head of stack (linked list)
+ * @new_node: the node to add
+ *
+ * Return: void
+ */
+void add_node_lifo(stack_t **stack, stack_t *new_node)
 {
-	char *str = NULL;
-	char *command = NULL;
-	unsigned int line = 1;
-	size_t size = 0;
-	stack_t *stack = NULL;
-	FILE *file;
+	new_node->prev = NULL;
+	new_node->next = *stack;
+	if (*stack)
+		(*stack)->prev = new_node;
+	*stack = new_node;
+}
 
-	file = fopen(file_name, "r");
-	if (!file)
+/**
+ * add_node_fifo - adds a new node at the end of a stack_t list
+ * @stack: head of stack (linked list)
+ * @new_node: the node to add
+ *
+ * Return: void
+ */
+void add_node_fifo(stack_t **stack, stack_t *new_node)
+{
+	stack_t *copy = *stack;
+
+	new_node->next = NULL;
+	if (!*stack)
 	{
-		printf("Error: Can't open file %s\n", file_name);
-		exit(EXIT_FAILURE);
+		new_node->prev = NULL;
+		*stack = new_node;
 	}
-	argument_container.file = file;
-	while (getline(&str, &size, file) != -1)
+	else
 	{
-		argument_container.input = str;
-		if (*str == '\n')
-		{
-			line++;
-			continue;
-		}
-		command = strtok(str, " \t\n");
-		if (!command)
-		{
-			line++;
-			continue;
-		}
-		argument_container.arguments = strtok(NULL, " \t\n");
-		get_opcode(&stack, line, command);
-		line++;
+		while (copy->next)
+			copy = copy->next;
+		copy->next = new_node;
+		new_node->prev = copy;
 	}
-	free_stack(&stack);
+}
+
+/**
+ * _push - adds a new node at the beginning of a stack_t list
+ * @stack: head of stack (linked list)
+ * @line_number: line number
+ *
+ * Return: void
+ */
+void _push(stack_t **stack, unsigned int line_number)
+{
+	stack_t *new_node = NULL;
+	char *num;
+	(void)line_number;
+
+	if (inventory->input[1] == NULL)
+		handle_errors(ERROR_PUSH);
+	else
+		num = inventory->input[1];
+	if (are_digits(num) == TRUE)
+	{
+		new_node = malloc(sizeof(stack_t));
+		if (new_node == NULL)
+			handle_errors(ERROR_MALLOC);
+	}
+	else
+		handle_errors(ERROR_PUSH);
+
+	new_node->n = atoi(num);
+	if (inventory->order == LIFO)
+		add_node_lifo(stack, new_node);
+	else
+		add_node_fifo(stack, new_node);
 }
