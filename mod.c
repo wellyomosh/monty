@@ -1,31 +1,34 @@
+#include <stdio.h>
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 #include "monty.h"
+
 /**
-* op_mod - mods the top two elements of the stack,
-* and combines them into one node.
-* @stack: the memory
-* @line_number: the line
-*/
-void op_mod(stack_t **stack, unsigned int line_number)
+ * mod - computes the remainder of the division
+ * @stack: stack given by main
+ * @line_cnt: line counter
+ *
+ * Return: void
+ */
+void mod(stack_t **stack, unsigned int line_cnt)
 {
-	int x, y;
+	int result;
 
-	if (!(*stack)->next || !*stack || !stack)
+	if (!stack || !*stack || !((*stack)->next))
 	{
-		printf("L%d: can't mod, stack too short\n", line_number);
-		free_stack(stack);
-		exit(EXIT_FAILURE);
+		fprintf(stderr, "L%d: can't mod, stack too short\n", line_cnt);
+		status = EXIT_FAILURE;
+		return;
+	}
+	if (((*stack)->n) == 0)
+	{
+		fprintf(stderr, "L%d: division by zero\n", line_cnt);
+		status = EXIT_FAILURE;
+		return;
 	}
 
-	if ((*stack)->n == 0)
-	{
-		fprintf(stderr, "L%d: division by zero\n", line_number);
-		free_stack(stack);
-		exit(EXIT_FAILURE);
-	}
-	x = (*stack)->n;
-	y = (*stack)->next->n;
-	*stack = (*stack)->next;
-	free((*stack)->prev);
-	(*stack)->prev = NULL;
-	(*stack)->n = y % x;
+	result = ((*stack)->next->n) % ((*stack)->n);
+	pop(stack, line_cnt);/*For top node*/
+	(*stack)->n = result;
 }
