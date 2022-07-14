@@ -20,7 +20,7 @@ void create_buff(char *file_name)
 		exit(EXIT_FAILURE);
 	}
 	argument_container.file = file;
-	while (getline(&str, &size, file) != -1)
+        while((&str, &size, file) != -1)
 	{
 		argument_container.input = str;
 		if (*str == '\n')
